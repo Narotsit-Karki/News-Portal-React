@@ -1,0 +1,24 @@
+@import url('../../node_modules/bootstrap/dist/css/bootstrap.min.css');
+
+@import url('../../node_modules/@fortawesome/fontawesome-free/css/all.min.css');
+
+
+body{
+    background-color: #eaeaea;
+    /* overflow-x: hidden; */
+}
+
+#logo{
+    width: 30px;
+    height: 30px;
+}
+
+.brand-name{
+    font-weight: bold;
+    color:  #3b5998;
+}
+
+#spinner{
+    width: 3rem;
+    height: 3rem;
+}
