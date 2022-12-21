@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import {useDispatch} from "react-redux"
-import { loggedin } from "../app/loginSlice";
+import { set } from "../app/userSlice";
 import { Link,useNavigate } from "react-router-dom";
 import logo from "../assets/icon/logo-128x128.png"
 import "../css/style.css"
@@ -10,7 +10,6 @@ import "../css/style.css"
 export const Login = () =>{
     let [username,setUsername] = useState('')
     let[password,setPassword] = useState('')
-    let[auth_token,setToken] = useState('')
     let[has_error,setError] = useState(false)
     let[message ,setErrorMessage] = useState('')
     let[ has_error_username,setErrorUsername] = useState(false)
@@ -33,22 +32,26 @@ export const Login = () =>{
             setErrorMessage('please enter password')
             return false
         }
+       
         setErrorPassword(false)
         setErrorUsername(false)
         setSpinner(true)
         
-        axios.post('http://127.0.0.1:8000/api/api-auth-token/',{
+        axios.post(`${import.meta.env.VITE_API_URL}/login/`,{
             'username':username,
             'password':password,
             
         }).then(
             (response) => {
                 if(response.status == 200 && response.statusText == 'OK'){
-                    setToken(response.data.token)
                     setSpinner(false)
-                    dispatch(loggedin())
-                    window.localStorage.setItem('isAuthenticated', true)
-                    window.localStorage.setItem('token',auth_token)
+                    let payload =  {
+                        expiry:response.data.expiry,
+                        token:response.data.token,
+                        username:response.data.user.username
+                    }
+                    dispatch(set(payload))
+                    window.localStorage.setItem('user', payload)
                     navigate('/')
                 }else{
                     console.log('error')

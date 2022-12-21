@@ -75,18 +75,19 @@ export const Signup = () => {
 
                     </div>
                 </div>
+                
                 <div className="col-8">
 
                         <div className="col-6">
-                            {has_error_f_name?<span className='text text-danger ms-2'>{message}</span>:''}
+                            {has_error_f_name?<span className='text text-danger'>{message}</span>:''}
                             <input className="form-control rounded-pill" required type="text" placeholder="first name" onInput={(e) => {
-                        setFirstname(e.target.value);
-                        setErrorFirstName(false)
+                            setFirstname(e.target.value);
+                            setErrorFirstName(false)
                         }}/>
                         </div>
                 
                         <div className="col-6">
-                        {has_error_l_name?<span className='text text-danger ms-2'>{message}</span>:''}
+                        {has_error_l_name?<span className='text text-danger'>{message}</span>:''}
                         <input className="form-control rounded-pill" onInput={(e) => {setLastname(e.target.value);
                         setErrorLastName(false);
                         }} required type="text" placeholder="last name"/>

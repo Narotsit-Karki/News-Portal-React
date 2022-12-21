@@ -4,21 +4,32 @@ import "../css/style.css"
 import logo from "../assets/icon/logo-64x64.png"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux";
-import { loggedin, loggedout } from '../app/loginSlice';
+// import { loggedin, loggedout } from '../app/userSlice';
 import { useEffect } from "react";
+import axios from "axios";
 export const BaseLayout = () => {
     const dispatch = useDispatch();
+    let isAuthenticated = false;
+//     useEffect(()=>{
+//         let login = JSON.parse(window.localStorage.getItem('isAuthenticated'))
+//         if (login){
+//             dispatch(loggedin())
+//         }else{
+//             dispatch(loggedout())
+//         }
+//     },[]
+//     )
+//    const isAuthenticated = useSelector(state => state.login.value)
 
-    useEffect(()=>{
-        let login = JSON.parse(window.localStorage.getItem('isAuthenticated'))
-        if (login){
-            dispatch(loggedin())
-        }else{
-            dispatch(loggedout())
-        }
-    },[]
-    )
-   const isAuthenticated = useSelector(state => state.login.value)
+//    const Logout = () => {
+//     axios.post(`${import.meta.env.VITE_API_URL}/logout`,{
+//         headers:{'Authorization': `Token`
+
+//     }})
+//     window.localStorage.setItem('isAuthenticated',false);
+//     window.localStorage.removeItem('token');
+//     // dispatch(loggedout())
+// }
 return <>
 {/* navbar start */}
 <div className="container bg-white pt-3">
@@ -31,7 +42,7 @@ return <>
                 </Link>
             </h3>
         </div>
-        
+    
         <div className="col-auto">
             <div className="input-group">
                 <input className="form-control" placeholder="Search topics and more ..."/>
@@ -77,11 +88,7 @@ return <>
                      </a>
                  <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                      <Link className="dropdown-item" to="#"><i className="fa-solid fa-user text-primary"></i> Account</Link>
-                     <Link className="dropdown-item" to="/" onClick={()=>{
-                        window.localStorage.setItem('isAuthenticated',false);
-                        window.localStorage.removeItem('token');
-                        dispatch(loggedout());
-                     }}><i className="fa-solid fa-sign-out text-danger"></i> Logout</Link>
+                     <Link className="dropdown-item" to="/" onClick={Logout}><i className="fa-solid fa-sign-out text-danger"></i> Logout</Link>
                  </div>
                  </li>:
                 ''}
@@ -89,8 +96,8 @@ return <>
         </div>
 
     </div>
-   
 </nav>
+
 <Outlet/>
 <footer className="row text-bg-light mt-4">
     <div className="col-4">
