@@ -3,31 +3,44 @@ import { useState } from "react";
 import {useDispatch} from "react-redux"
 import { set } from "../app/userSlice";
 import { Link,useNavigate } from "react-router-dom";
+import { setAlertMessage,removeAlertMessage} from "../app/alertSlice";
 import logo from "../assets/icon/logo-128x128.png"
 import "../css/style.css"
-
+import { Alert } from "bootstrap";
 
 export const Login = () =>{
-    let [username,setUsername] = useState('')
-    let[password,setPassword] = useState('')
-    let[has_error,setError] = useState(false)
-    let[message ,setErrorMessage] = useState('')
+    const dispatch = useDispatch()
     let[ has_error_username,setErrorUsername] = useState(false)
     let[ has_error_password,setErrorPassword] = useState(false)
+    
+    let[form,setForm] = useState({
+        username:'',
+        password:''
+    })
+    
     let[spinner,setSpinner] = useState(false)
+    let[message,setErrorMessage] = useState('')
     const navigate = useNavigate();
-    const dispatch = useDispatch()
+    
 
-       
+    const handleForm = (e) => {
+        setErrorPassword(false);
+        setErrorUsername(false);
+        const {name,value} = e.target;
+        setForm({
+            ...form,
+            [name]:value
+        })
+    }
 
     const userAuthenticate = () => {
-        if( username==""){
+        if( form.username==""){
             setErrorUsername(true)
             setErrorMessage('please enter username')
             return false
         }
 
-        if(password==""){
+        if(form.password==""){
             setErrorPassword(true)
             setErrorMessage('please enter password')
             return false
@@ -38,8 +51,8 @@ export const Login = () =>{
         setSpinner(true)
         
         axios.post(`${import.meta.env.VITE_API_URL}/login/`,{
-            'username':username,
-            'password':password,
+            'username':form.username,
+            'password':form.password,
             
         }).then(
             (response) => {
@@ -51,21 +64,25 @@ export const Login = () =>{
                         username:response.data.user.username
                     }
                     dispatch(set(payload))
-                    window.localStorage.setItem('user', payload)
+                    dispatch(setAlertMessage({
+                        message:'logged in successfully',
+                        alert_type: 'success'
+                    }))
+                    localStorage.setItem('user', JSON.stringify(payload))
                     navigate('/')
                 }else{
-                    console.log('error')
-                    setError(true)
-                    setErrorMessage('username or password not valid.')
-                    return false
+                    dispatch(setAlertMessage({
+                        message:'username or password not valid',
+                        alert_type:'danger'
+                    }))
+                    setSpinner(false);
                 }
-            }
-        ).catch(
+            }).catch(
             (err) => {
                 console.log(err);
-                setError(true);
+                dispatch(setAlertMessage({message:'some error occurred try again later',alert_type:'danger'}))
                 setSpinner(false);
-                setErrorMessage('username or password not valid.')
+                
             }
         );
     }
@@ -74,16 +91,7 @@ export const Login = () =>{
     return <>
         <div className="container mt-4 bg-light rounded-top shadow">
            <div className='row'>
-           { has_error?
-                <div className= "col-12 mt-3">
-                    <div className="alert alert-danger alert-dismissible"  role="alert">
-           <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={()=>{setError(false)}}>
-               <span aria-hidden="true">&times;</span>
-        </button>
-           <small> {message} </small>
-        </div>
-        </div>
-        :'' }
+          
             <div className='col-6'>
                     <div className="col-12">
                         <img src={logo}></img>
@@ -96,18 +104,14 @@ export const Login = () =>{
                     </div>
             </div>
             <div className="col-6">
+                
                 {has_error_username?<span className='text text-danger '>{message}</span>:''}
                 <div className="col-12 mt-1">
-                    <input onInput={(e) => {setUsername(e.target.value)
-                         setErrorUsername(false);
-                    }} className="form-control" required type="text" placeholder="username"></input>
+                    <input onInput={handleForm} className="form-control"  value={form.username} name="username" type="text" placeholder="username"></input>
                 </div>
                 {has_error_password?<span className='text text-danger '>{message}</span>:''}
                 <div className="col-12 mt-1">
-                    <input onInput={(e) => {
-                        setPassword(e.target.value);
-                        setErrorPassword(false);
-                        }}className="form-control" required type="password" placeholder="password"></input>
+                    <input onInput={handleForm} className="form-control"name="password" value={form.password} type="password" placeholder="password"></input>
                 </div>
                 
                 {spinner?
@@ -118,12 +122,12 @@ export const Login = () =>{
                  </button>
                  </div>
                  :
-                    <div className="col-12 mt-1">
+                <div className="col-12 mt-1">
                     <button className="btn btn-primary w-100" onClick={userAuthenticate}>Login</button>
                     <hr/>
-                    </div>
+                </div>
                 }
-                 
+            
                 <div className="col-12 mt-1">
                     <Link to="/join">
                     <button className="btn btn-success btn-md w-100">Join us</button>
