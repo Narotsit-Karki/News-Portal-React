@@ -2,6 +2,9 @@ import logo from "../assets/icon/logo-128x128.png"
 import "../css/style.css"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import { useDispatch } from "react-redux"
+import { setAlertMessage,removeAlertMessage} from "../app/alertSlice";
+
 import axios from "axios"
 
 
@@ -9,14 +12,13 @@ export const Signup = () => {
 
     let[spinner,setSpinner] = useState(false)
     let[message ,setErrorMessage] = useState('')
-
+    const dispatch = useDispatch()
     let[has_error_username,setErrorUsername] = useState(false)
     let[has_error_email,setErrorEmail] = useState(false)
     let[has_error_password,setErrorPassword] = useState(false)
     let[has_error_confirm_password,setErrorConfirmPassword] = useState(false)
     let[has_error_f_name,setErrorFirstName] = useState(false)
     let[has_error_l_name,setErrorLastName] = useState(false)
-    let[has_error_phone,setErrorPhone] = useState(false)
 
     let [firstname , setFirstname] = useState('')
     let [lastname , setLastname] = useState('')
@@ -25,6 +27,7 @@ export const Signup = () => {
     let[confirmpassword,setConfirmPassword] = useState('')
     let[email,setEmail] = useState('')
 
+    
     const navigate = useNavigate()
     const valiDateData = () => {
         const aplhaExp = /^[a-zA-Z ]+$/;
@@ -96,14 +99,22 @@ export const Signup = () => {
                     console.log(response)
                     if(response.status == 201 && response.statusText=='Created'){
                         setSpinner(false)
+                        dispatch(setAlertMessage({
+                            message:'registered successfully',
+                            alert_type:'success'
+                        }))
                         navigate("/login")
                     }
                 }
             ).catch(
                 (err) =>{
                     setSpinner(false)
-                    setAlert(true)
-                    setErrorMessage(err)
+                    setAlertMessage(
+                        {
+                            message:'some error occurred while registering',
+                            alert_type:'danger'
+                        }
+                    )
                 }
             )
         }        
@@ -139,12 +150,6 @@ export const Signup = () => {
                         <input className="form-control rounded-pill" onInput={(e) => {setLastname(e.target.value);
                         setErrorLastName(false);
                         }} required type="text" placeholder="last name"/>
-                      </div>
-                      <div className="col-6">
-                        {has_error_phone?<span className='text text-danger'>{message}</span>:''}
-                        <input type="number" className="form-control rounded-pill" onInput={(e) => {setPhone(e.target.value);
-                        setErrorPhone(false);
-                        }} required placeholder="phone number"/>
                       </div>
 
                         {has_error_username?<span className='text text-danger ms-2'>{message}</span>:''}

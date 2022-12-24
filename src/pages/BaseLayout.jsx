@@ -1,5 +1,5 @@
 
-import { Link, Outlet } from "react-router-dom"
+import { Link, Outlet, useNavigate } from "react-router-dom"
 import "../css/style.css"
 import logo from "../assets/icon/logo-64x64.png"
 import { useSelector,useDispatch } from "react-redux"
@@ -8,19 +8,45 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { setAlertMessage,removeAlertMessage} from "../app/alertSlice";
 import { remove , set} from "../app/userSlice";
+import { setCountry } from "../app/countrySlice";
 
 
+const regions = [
+{name:'Australia',code:'au'},
+{name:'Canada',code:'ca'},
+{name:'China',code:'cn'},
+{name:'France',code:'fr'},
+{name:'Germany',code:'de'},
+{name:'India',code:'in'},
+{name:'New Zealand',code:'nz'},
+{name:'Russia',code:'ru'},
+{name:'South Africa',code:'za'},
+{name:'South Korea',code:'kr'},
+{name:'Switzerland',code:'ch'},
+{name:'United Kingdom',code:'gb'},
+{name:'United States',code:'us'}
+]
 
-
+const categories = [
+'business',
+'entertainment',
+'health',
+'politics',
+'science',
+'sports',
+'technology'
+]
 
 export const BaseLayout = () => {
     const dispatch = useDispatch();
     const has_error =  useSelector(state => state.alert.active)
     const alert = useSelector(state => state.alert.value)
     let user = useSelector(state => state.user.value)
-
+    let navigate = useNavigate()
     let isAuthenticated =useSelector(state => state.user.isAuthenticated)
+    
     useEffect(()=>{
+        
         let user_local = JSON.parse(localStorage.getItem('user'))
         if(user_local){
             dispatch(set(user_local))
@@ -85,26 +111,42 @@ export const BaseLayout = () => {
         </div>
 
         <div className='col-auto'>
+        
             <ul className="navbar-nav">
-                <li className="nav-item link">
-                    <Link className="nav-link" to='/'>Top headlines</Link>
+                {/* <li className="nav-item"> */}
+                    {/* <Link className="nav-link" to='/'>Top headlines</Link> */}
+                    
+                    <select className="form-control rounded-pill" onChange={(e) =>{dispatch(setCountry(e.target.value))}}>
+                        {regions.map((region)=>{
+                            return <><option value={region.code}>{region.name}</option></>
+                            })}
+                    </select>
+                
+               
+                <li className="nav-item dropdown">
+                    <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Category
+                    </a>
+                <div className="dropdown-menu" aria-labelledby="navbarDropdown1">
+                    
+                    {categories.map((cat)=>{
+                        
+                        return <button className="dropdown-item" onClick={()=>{navigate(`/category/${cat}`)}}>{cat}</button>
+                    })
+                    }
+                 
+                    </div>
                 </li>
-                <li className="nav-item link">
-                    <Link className="nav-link" to='/'>Sports</Link>
-                </li>
-                <li className="nav-item link">
-                    <Link className="nav-link" to="/">
-                        Weather
-                    </Link>
-                </li>
+                
                 <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     More
                     </a>
                 <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                    
                     <Link className="dropdown-item" to="/about-us"><i className="fa-solid fa-circle-info text-info"></i> About Us</Link>
                     <Link className="dropdown-item" to="/contact-us"><i className="fa-solid fa-phone text-warning"></i> Contact Us</Link>
-                    <Link className="dropdown-item"  to='#'>Blogs</Link>
+                    <Link className="dropdown-item"  to='/blogs'>Blogs</Link>
                 <div className="dropdown-divider"></div>
                 {! isAuthenticated?
                 <Link className="dropdown-item" to="/login"><i className="fa-solid fa-sign-in text-success"></i> Login</Link>

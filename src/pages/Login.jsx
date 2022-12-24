@@ -80,7 +80,7 @@ export const Login = () =>{
             }).catch(
             (err) => {
                 console.log(err);
-                dispatch(setAlertMessage({message:'some error occurred try again later',alert_type:'danger'}))
+                dispatch(setAlertMessage({message:'username or password not valid                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       Z   Z   ',alert_type:'danger'}))
                 setSpinner(false);
                 
             }
