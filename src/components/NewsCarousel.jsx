@@ -8,14 +8,15 @@ export const NewsCarousel = ({news}) => {
         news.map((nw) =>{
         if(!(nw.urlToImage===null)){
            
-            return (<Carousel.Item>
+            return (
+                <Carousel.Item>
                     <img height="550px"
                     className="w-100"
                     src={nw.urlToImage}
                 alt="top headline slide"/>
                 <Carousel.Caption>
                     <h3 className="text text-warning fst-bold bg-dark">{nw.title}</h3>
-                    <p className='fst-bold text-dark bg-light'>{ReactHtmlParser(nw.description)}</p>
+                    <div className='fst-bold text-dark bg-light'>{ReactHtmlParser(nw.description)}</div>
                     </Carousel.Caption>
             </Carousel.Item>)
             }

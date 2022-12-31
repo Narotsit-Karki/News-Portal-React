@@ -31,7 +31,6 @@ export const Signup = () => {
     const navigate = useNavigate()
     const valiDateData = () => {
         const aplhaExp = /^[a-zA-Z ]+$/;
-        const phoneExp = /^[0-9]{10}$/;
     
         if(firstname == "" || !firstname.match(aplhaExp)){
             setErrorFirstName(true);

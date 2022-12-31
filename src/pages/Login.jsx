@@ -5,24 +5,27 @@ import { set } from "../app/userSlice";
 import { Link,useNavigate } from "react-router-dom";
 import { setAlertMessage,removeAlertMessage} from "../app/alertSlice";
 import logo from "../assets/icon/logo-128x128.png"
-import "../css/style.css"
+import "../css/style.css";
 import { Alert } from "bootstrap";
+
 
 export const Login = () =>{
     const dispatch = useDispatch()
+    // state for maintaining errors
     let[ has_error_username,setErrorUsername] = useState(false)
-    let[ has_error_password,setErrorPassword] = useState(false)
+    let[ has_error_password,setErrorPassword] = useState(false)    
     
+    // initial form state
     let[form,setForm] = useState({
         username:'',
         password:''
     })
-    
+    // state for a spinner loader and error message
     let[spinner,setSpinner] = useState(false)
     let[message,setErrorMessage] = useState('')
     const navigate = useNavigate();
-    
 
+    // setting username and password
     const handleForm = (e) => {
         setErrorPassword(false);
         setErrorUsername(false);
@@ -31,15 +34,15 @@ export const Login = () =>{
             ...form,
             [name]:value
         })
-    }
+        }
 
     const userAuthenticate = () => {
+        
         if( form.username==""){
             setErrorUsername(true)
             setErrorMessage('please enter username')
             return false
         }
-
         if(form.password==""){
             setErrorPassword(true)
             setErrorMessage('please enter password')
@@ -56,14 +59,18 @@ export const Login = () =>{
             
         }).then(
             (response) => {
+                
                 if(response.status == 200 && response.statusText == 'OK'){
                     setSpinner(false)
                     let payload =  {
-                        expiry:response.data.expiry,
                         token:response.data.token,
-                        username:response.data.user.username
+                        username:response.data.user.username,
+                        user_id:response.data.user.id,
+                        email:response.data.user.email
                     }
+                    
                     dispatch(set(payload))
+
                     dispatch(setAlertMessage({
                         message:'logged in successfully',
                         alert_type: 'success'
@@ -79,8 +86,8 @@ export const Login = () =>{
                 }
             }).catch(
             (err) => {
-                console.log(err);
-                dispatch(setAlertMessage({message:'username or password not valid                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       Z   Z   ',alert_type:'danger'}))
+                dispatch(setAlertMessage(
+                    {message:'username or password not valid',alert_type:'danger'}));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
                 setSpinner(false);
                 
             }

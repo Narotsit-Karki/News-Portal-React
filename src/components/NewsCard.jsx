@@ -6,7 +6,7 @@ export const NewsCard = ({news}) => {
     if(news.urlToImage === null||news.urlToImage==" "){
         news.urlToImage = logo
     }else if(news.author === null){
-        news.author='Unknown'
+        news.author= news.source.name
     }
 
     let parse_date =new Date(news.publishedAt)
@@ -15,7 +15,7 @@ export const NewsCard = ({news}) => {
 
     return <>
         
-        <div className="card ms-2 mt-2" style={{width:'48%'}}>
+        <div className="card mt-2 mx-2" style={{width:'48%'}}>
             <img className="card-img-top mt-1"src={news.urlToImage} alt="Card image cap"/>
             <div className="card-body">
                 <h5 className="card-title">{news.title}</h5>
@@ -36,9 +36,9 @@ export const NewsCard = ({news}) => {
                 </div>
                 <div className="card-footer mt-auto">
                 
-                <p className="card-text fst-italic">{ReactHtmlParser(news.description)}</p>
-
-                   {/* <button className="btn btn-primary w-100"><i className="fa-solid fa-eye"></i> view</button> */}
+                <div className="card-text fst-italic">
+                    {ReactHtmlParser(news.description)}
+                </div>
               
                 </div>
             </div>

@@ -46,7 +46,7 @@ export const BaseLayout = () => {
     let isAuthenticated =useSelector(state => state.user.isAuthenticated)
     
     useEffect(()=>{
-        
+        // get authenticated user info and dispatch set reducer to set user data
         let user_local = JSON.parse(localStorage.getItem('user'))
         if(user_local){
             dispatch(set(user_local))
@@ -62,17 +62,18 @@ export const BaseLayout = () => {
            headers: auth_headers
         }).then(
             (resp) => {
-                
+
                 if(resp.status == 204){
                     localStorage.removeItem('user')
                     dispatch(remove())
-
+                   
                     dispatch(setAlertMessage(
                         {
                             message:'logged out',
                             alert_type:'info'
                         }
                     ))
+                    navigate('/login');
                 }
             }
         ).catch(
@@ -90,7 +91,7 @@ export const BaseLayout = () => {
     
     return <>
         {/* navbar start */}
-    <div className="container bg-white pt-3">   
+    <div className="container-fluid bg-white pt-3" style={{width:'98%'}}>   
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
     <div className="row">
         <div className="col-auto">
@@ -173,7 +174,7 @@ export const BaseLayout = () => {
 </nav>
 <div className="row">
 { has_error?
-         <div className= "col-12 mt-3">
+         <div className= "col-12 my-2">
             <Alert variant={alert.alert_type} dismissible onClose={() =>{dispatch(removeAlertMessage())} } closeLabel="foo">
                 <strong>{alert.message}</strong>
             </Alert>
@@ -230,7 +231,7 @@ export const BaseLayout = () => {
     &copy; Ajax News, 2022. All rights reserved.
     </div>
   </footer>
-  </div>
+    </div>
 
  
 </>
