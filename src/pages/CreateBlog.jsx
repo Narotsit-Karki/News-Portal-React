@@ -8,7 +8,7 @@ import { setAlertMessage } from "../app/alertSlice";
 
 
 export const CreateBlog = () => {
-
+    
     const editorRef = useRef(null); 
     const user = useSelector(state => state.user.value)
     const [blog,setBlog] = useState({
