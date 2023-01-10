@@ -1,6 +1,6 @@
 import logo from "../assets/icon/logo-512x512.png"
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
-
+import { Link } from "react-router-dom";
 export const NewsCard = ({news}) => {
     
     if(news.urlToImage === null||news.urlToImage==" "){
@@ -10,14 +10,21 @@ export const NewsCard = ({news}) => {
     }
 
     let parse_date =new Date(news.publishedAt)
-    news.publishedAt = parse_date.toUTCString()
+    news.publishedAt = parse_date.toDateString()
 
 
     return <>
-        
-        <div className="card mt-2 mx-2" style={{width:'48%'}}>
-            <img className="card-img-top mt-1"src={news.urlToImage} alt="Card image cap"/>
-            <div className="card-body">
+        <Link to="/news-detail" className="text-decoration-none" state={{data:news}}>
+        <div className="card news-card mt-2 mx-2" style={{width:'100%'}}>
+            <div className="row">
+                <div className="col-4">
+                    <img className="card-img-top news-card-img mt-1"src={news.urlToImage} alt="Card image cap"/>
+                    <div className="card-middle">
+                <h3 className="text text-light"><i className="fa-solid fa-eye"></i> view</h3>
+                    </div>
+                </div>
+                <div className="col-8">
+                    <div className="card-body">
                 <h5 className="card-title">{news.title}</h5>
                 <div className="row">
                 <div className="col-12">
@@ -36,13 +43,16 @@ export const NewsCard = ({news}) => {
                 </div>
                 <div className="card-footer mt-auto">
                 
-                <div className="card-text fst-italic">
+                <div className="card-text fst-italic text-dark">
                     {ReactHtmlParser(news.description)}
                 </div>
               
                 </div>
+                    </div>
+                </div>
             </div>
-    </div>
+        </div>
+        </Link>
     </>
 }
 

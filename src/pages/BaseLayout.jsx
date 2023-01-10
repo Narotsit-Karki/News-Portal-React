@@ -5,10 +5,12 @@ import logo from "../assets/icon/logo-64x64.png"
 import { useSelector,useDispatch } from "react-redux"
 import Alert from 'react-bootstrap/Alert';
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { setAlertMessage,removeAlertMessage} from "../app/alertSlice";
-import { remove , set} from "../app/userSlice";
+
+import {removeAlertMessage} from "../app/alertSlice";
+import { set} from "../app/userSlice";
 import { setCountry } from "../app/countrySlice";
+import { SearchForm } from "../components/SearchForm.";
+import { Logout } from "./Logout";
 
 
 const regions = [
@@ -54,40 +56,7 @@ export const BaseLayout = () => {
     },[]
     )
     
-    const Logout = () => {
-        let auth_headers = {
-            Authorization: `Token ${user.token}`
-        }
-        axios.post(`${import.meta.env.VITE_API_URL}/logout/`,{},{
-           headers: auth_headers
-        }).then(
-            (resp) => {
-
-                if(resp.status == 204){
-                    localStorage.removeItem('user')
-                    dispatch(remove())
-                   
-                    dispatch(setAlertMessage(
-                        {
-                            message:'logged out',
-                            alert_type:'info'
-                        }
-                    ))
-                    navigate('/login');
-                }
-            }
-        ).catch(
-            (err) => {
-                console.log(err)
-                dispatch(setAlertMessage(
-                    {
-                        message: 'Some error occurred',
-                        alert_type: 'danger'
-                    }
-                    ))}
-        )
-    }
-    
+  
     
     return <>
         {/* navbar start */}
@@ -103,12 +72,7 @@ export const BaseLayout = () => {
         </div>
     
         <div className="col-auto">
-            <div className="input-group">
-                <input className="form-control" placeholder="Search topics and more ..."/>
-                <button className="btn btn-primary">
-                    <i className="fa-solid fa-search"></i>
-                </button>
-            </div>
+           <SearchForm/>
         </div>
 
         <div className='col-auto'>
@@ -147,7 +111,7 @@ export const BaseLayout = () => {
                     
                     <Link className="dropdown-item" to="/about-us"><i className="fa-solid fa-circle-info text-info"></i> About Us</Link>
                     <Link className="dropdown-item" to="/contact-us"><i className="fa-solid fa-phone text-warning"></i> Contact Us</Link>
-                    <Link className="dropdown-item"  to='/blogs'>Blogs</Link>
+                    <Link className="dropdown-item"  to='/blogs'><i className="fa-solid fa-blog" style={{color:'#fc4f08'}}></i> Blogs</Link>
                 <div className="dropdown-divider"></div>
                 {! isAuthenticated?
                 <Link className="dropdown-item" to="/login"><i className="fa-solid fa-sign-in text-success"></i> Login</Link>
@@ -163,8 +127,8 @@ export const BaseLayout = () => {
                     {user.username}
                   </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <Link className="dropdown-item" to="#"><i className="fa-solid fa-user text-primary"></i> Account</Link>
-                  <button className="dropdown-item" to="#" onClick={Logout}><i className="fa-solid fa-sign-out text-danger"></i> Logout</button>
+                  <Link className="dropdown-item" to="/accounts"><i className="fa-solid fa-user text-primary"></i> Account</Link>
+                  <Logout token={user.token}/>
               </div>
               </li>}
             </ul>
@@ -230,9 +194,7 @@ export const BaseLayout = () => {
     <div className="col-12 text-center">
     &copy; Ajax News, 2022. All rights reserved.
     </div>
-  </footer>
-    </div>
-
- 
+</footer>
+</div>
 </>
 }

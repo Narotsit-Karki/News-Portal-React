@@ -11,71 +11,86 @@ import axios from "axios"
 export const Signup = () => {
 
     let[spinner,setSpinner] = useState(false)
-    let[message ,setErrorMessage] = useState('')
     const dispatch = useDispatch()
-    let[has_error_username,setErrorUsername] = useState(false)
-    let[has_error_email,setErrorEmail] = useState(false)
-    let[has_error_password,setErrorPassword] = useState(false)
-    let[has_error_confirm_password,setErrorConfirmPassword] = useState(false)
-    let[has_error_f_name,setErrorFirstName] = useState(false)
-    let[has_error_l_name,setErrorLastName] = useState(false)
 
-    let [firstname , setFirstname] = useState('')
-    let [lastname , setLastname] = useState('')
-    let [username,setUsername] = useState('')
-    let[password,setPassword] = useState('')
-    let[confirmpassword,setConfirmPassword] = useState('')
-    let[email,setEmail] = useState('')
+    let initial = {
+        value:'',
+        has_error:false,
+        error_message:''
+    }
+    
+    let [firstname , setFirstname] = useState(initial)
+    let [lastname , setLastname] = useState(initial)
+    let [username,setUsername] = useState(initial)
+    let[password,setPassword] = useState(initial)
+    let[confirmpassword,setConfirmPassword] = useState(initial)
+    let[email,setEmail] = useState(initial)
 
     
     const navigate = useNavigate()
+
     const valiDateData = () => {
-        const aplhaExp = /^[a-zA-Z ]+$/;
+        const aplhaExp = /^[a-zA-Z]+$/;
+        const emailExp = /^\w+([\.]?\w+)*@([\.]?\w+)*(\.\w{2,3})$/
+        
     
-        if(firstname == "" || !firstname.match(aplhaExp)){
-            setErrorFirstName(true);
-            setErrorMessage('please enter valid first name')
+        if(firstname.value == "" || !firstname.value.match(aplhaExp)){
+            setFirstname({
+                ...firstname,
+                has_error: true,
+                error_message:'enter a valid firstname'
+            })
             return false
-        }
+            }
         
-        if(lastname == ""&& !lastname.match(aplhaExp)){
-            setErrorLastName(true)
-            setErrorMessage('please enter valid last name')
+        if(lastname.value == ""||!lastname.value.match(aplhaExp)){
+           setLastname({
+                ...lastname,
+                has_error:true,
+                error_message:'enter a valid last name'})
             return false
         }
 
-        if( username=="" && !username.match(aplhaExp)){
-            setErrorUsername(true)
-            setErrorMessage('please enter valid username')
+        if( username.value==""||!username.value.match(aplhaExp)){
+           setUsername({
+            ...username,
+            has_error:true,
+            error_message:'enter a valid username'
+           })
             return false
         }
 
-        if( email==""){
-            setErrorUsername(true)
-            setErrorMessage('please enter valid email address')
-            return false
-        
-        }
-
-        if(password==""){
-            setErrorPassword(true)
-            setErrorMessage('please enter password')
-            return false
-        }else if(password.length<8){
-            setErrorPassword(true)
-            setErrorMessage('please enter password of length greater than 8')
+        if(email.value==""|| !email.value.match(emailExp)){
+           setEmail({
+            ...email,
+            has_error:true,
+            error_message: 'enter a valid email address'
+         })
             return false
         }
 
-        if(confirmpassword==""){
-            setErrorConfirmPassword(true)
-            setErrorMessage('please fill this field')
+        if(password.value==""){
+            setPassword({
+                ...password,
+                has_error:true,
+                error_message:'password field cannot be empty'
+            })
+            return false
+        }else if(password.value.length<8){
+           setPassword({
+            ...password,
+            has_error:true,
+            error_message: 'password length must be greater than 8'
+           })
             return false
         }
 
-        if(confirmpassword != password){
-            setErrorConfirmPassword(true)
-            setErrorMessage('enter same password')
+        if(confirmpassword.value != password.value){
+           setConfirmPassword({
+            ...confirmpassword,
+            has_error:true,
+            error_message:"password don't match"
+           })
             return false
         }
         return true
@@ -86,16 +101,16 @@ export const Signup = () => {
             setSpinner(true)
             axios.post(
                 `${import.meta.env.VITE_API_URL}/register/`,{
-                    'username':username,
-                     'first_name':firstname,
-                     'last_name':lastname,
-                     'password':password,
-                     'password2':confirmpassword,
-                     'email':email
+                    'username':username.value,
+                     'first_name':firstname.value,
+                     'last_name':lastname.value,
+                     'password':password.value,
+                     'password2':confirmpassword.value,
+                     'email':email.value
                 }
             ).then(
                 (response) => {
-                    console.log(response)
+                    
                     if(response.status == 201 && response.statusText=='Created'){
                         setSpinner(false)
                         dispatch(setAlertMessage({
@@ -107,17 +122,39 @@ export const Signup = () => {
                 }
             ).catch(
                 (err) =>{
-                    setSpinner(false)
-                    setAlertMessage(
-                        {
-                            message:'some error occurred while registering',
-                            alert_type:'danger'
-                        }
-                    )
+                   HandleErrors(err.response.data)
                 }
-            )
+            ).finally(() => setSpinner(false))
         }        
     }
+
+    const HandleErrors = (errors) => {
+        const keys = Object.keys(errors)
+        console.log(errors)
+        keys.forEach((key,index) => {
+            switch(key){
+                case 'email':
+                    
+                    setEmail({
+                        ...email,
+                        has_error:true,
+                        error_message:errors.email.message
+                    })
+                    break;
+                case 'username':
+                    setUsername(
+                        {
+                            ...username,
+                            has_error:true,
+                            error_message:errors.username.message
+                        }
+                    )
+                    break;
+            }
+        });
+    }
+    
+    
     
     return<>
             <div className="container mt-4 bg-light rounded-top shadow">
@@ -138,48 +175,65 @@ export const Signup = () => {
                 <div className="col-8">
                     <div className="row">
                     <div className="col-6">
-                            {has_error_f_name?<span className='text text-danger'>{message}</span>:''}
-                            <input className="form-control rounded-pill" required type="text" placeholder="first name" onInput={(e) => {
-                            setFirstname(e.target.value);
-                            setErrorFirstName(false)
+                            <input value={firstname.value} className={`form-control ${firstname.has_error && 'is-invalid'} round-pill`} required type="text" placeholder="first name" onInput={(e) => {
+                            setFirstname({
+                                ...firstname,
+                                value:e.target.value,
+                                has_error:false
+                            });
                         }}/>
+                    {firstname.has_error?<div className='text text-danger'>{firstname.error_message}</div>:''}
+
                     </div>
                       <div className="col-6">
-                        {has_error_l_name?<span className='text text-danger'>{message}</span>:''}
-                        <input className="form-control rounded-pill" onInput={(e) => {setLastname(e.target.value);
-                        setErrorLastName(false);
+                        <input className={`form-control ${lastname.has_error && 'is-invalid'} round-pill`} onInput={(e) => {
+                            setLastname({
+                                value:e.target.value,
+                                has_error:false,
+                            })
                         }} required type="text" placeholder="last name"/>
+                         {lastname.has_error?<div className='text text-danger'>{lastname.error_message}</div>:''}
+
                       </div>
 
-                        {has_error_username?<span className='text text-danger ms-2'>{message}</span>:''}
                         <div className="col-12 mt-2">
-                        <input onInput={(e) => {setUsername(e.target.value)
-                             setErrorUsername(false);
-                        }} className="form-control rounded-pill" required type="text" placeholder="username"></input>
+                        <input onInput={(e) => {setUsername({
+                            value:e.target.value,
+                            has_error:false
+                        })
+                  
+                        }} value={username.value} className={`form-control ${username.has_error && 'is-invalid'} round-pill`}required type="text" placeholder="username"></input>
+                        {username.has_error?<div className='text text-danger ms-2'>{username.error_message}</div>:''}
                         </div>
 
-                        {has_error_email?<span className='text text-danger ms-2'>{message}</span>:''}
                         <div className="col-12 mt-2">
-                        <input onInput={(e) => {setEmail(e.target.value)
-                             setErrorEmail(false);
-                        }} className="form-control rounded-pill" required type="email" placeholder="email address"></input>
+                        <input onInput={(e) => {setEmail({
+                            value:e.target.value,
+                            has_error:false
+                        })
+                        }} value={email.value} className={`form-control ${email.has_error && 'is-invalid'} round-pill`} required type="email" placeholder="email address"></input>
+                        {email.has_error?<div className='text text-danger ms-2'>{email.error_message}</div>:''}
                         </div>
 
                         <div className="col-6 mt-2">
-                        {has_error_password?<span class='text text-danger ms-2'>{message}</span>:''}
-
                             <input onInput={(e) => {
-                                setPassword(e.target.value);
-                            setErrorPassword(false);
-                            }}className="form-control rounded-pill" required type="password" placeholder="password"></input>
+                                setPassword({
+                                    value:e.target.value,
+                                    has_error: false
+                                });
+                            
+                            }} value={password.value} className={`form-control ${password.has_error && 'is-invalid'} round-pill`} required type="password" placeholder="password"></input>
+                            {password.has_error?<div class='text text-danger ms-2'>{password.error_message}</div>:''}
                         </div>
-
                         <div className="col-6 mt-2">
-                            {has_error_confirm_password?<span class='text text-danger ms-2'>{message}</span>:''}
                             <input onInput={(e) => {
-                                setConfirmPassword(e.target.value);
-                                setErrorConfirmPassword(false);
-                                }}className="form-control rounded-pill" required type="password" placeholder="confirm password"></input>
+                                setConfirmPassword({
+                                    value:e.target.value,
+                                    has_error: false
+                                });
+                                
+                                }}className={`form-control ${confirmpassword.has_error && 'is-invalid'} round-pill`} required type="password" placeholder="confirm password"></input>
+                                {confirmpassword.has_error?<div class='text text-danger ms-2'>{confirmpassword.error_message}</div>:''}
                         </div>
 
                         {spinner?
@@ -194,7 +248,7 @@ export const Signup = () => {
                         <button className="btn btn-primary w-100" onClick={SignupUser}>Signup</button>
                         <hr/>
                         </div>
-                }
+                    }
                  
 
                         <div className="col-12 mt-1 mb-1">

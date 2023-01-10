@@ -85,6 +85,7 @@ export const Blog = () => {
         </div>
         <div className="row">  
         {blogs.length !=0?blogs.map((blog) => {
+                    
                     return <BlogCard blog={blog}/>
                 })
                 :  

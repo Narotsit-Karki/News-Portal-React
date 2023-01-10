@@ -8,9 +8,12 @@ import { Category } from "./pages/Categories";
 import AboutUs from "./pages/AboutUs";
 import ContactUs from "./pages/ContactUs";
 import { Error404 } from "./pages/DefaultPages";
-import { LoginRoute,BlogRoute } from "./PrivateRoutes";
+import { LoginRoute } from "./PrivateRoutes";
 import { BlogDetail } from "./pages/BlogDetail";
 import { CreateBlog } from "./pages/CreateBlog";
+import { NewsDetail } from "./pages/NewsDetails";
+import { Accounts } from "./pages/Accounts";
+import { Search } from "./pages/Search";
 
 export const SiteRoute = () => {
    
@@ -21,12 +24,16 @@ export const SiteRoute = () => {
                     <Route index element={<Home/>}/>
                     <Route path="/about-us" element={<AboutUs/>}/>
                     <Route path="/contact-us" element={<ContactUs/>}/>
-                    <Route path="/login" element={<LoginRoute><Login/></LoginRoute>}/>
+                    <Route path="/login" element={<LoginRoute location="/"><Login/></LoginRoute>}/>
                     <Route path="/join" element={<Signup/>}/>
+                    <Route path="/accounts" element={<LoginRoute location="/accounts"><Accounts/></LoginRoute>}/>
+                    <Route path="news-detail" element={<NewsDetail/>}/>
                     <Route path="/blogs/" element={<Blog/>}/>
+                    <Route path="/search" element={<Search/>}/>
                     <Route path="/blog/:slug" element={<BlogDetail/>}/>    
                     <Route path="/category/:cat" element = {<Category/>}/>
-                    <Route path="/create-blog" element={<BlogRoute ><CreateBlog/></BlogRoute>}/>
+                    <Route path="/create-blog" element={<LoginRoute location="/create-blog"><CreateBlog/></LoginRoute>}/>
+                
                 </Route>
                 <Route path="*" element={<BaseLayout/>}>
                     <Route path="*" element={<Error404/>}/>

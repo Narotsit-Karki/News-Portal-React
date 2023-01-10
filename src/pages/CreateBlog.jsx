@@ -11,6 +11,7 @@ export const CreateBlog = () => {
     
     const editorRef = useRef(null); 
     const user = useSelector(state => state.user.value)
+    // const isAuthenticated = useSelector(state => state.user.isAuthenticated)
     const [blog,setBlog] = useState({
         title: '',
         description: ''
@@ -152,7 +153,7 @@ export const CreateBlog = () => {
         }
     }
     setValidationError(true)
-    }
+}
 
     return <>
         <div className="row">
@@ -182,33 +183,63 @@ export const CreateBlog = () => {
                     </div>
                     <div className="col-6">
                         Preview Image
-                        <div className="border preview">
-                        {selectedFile && <img src={preview} className="img-fluid"/>}
+                        <div className="border">
+                        {selectedFile && <img src={preview} className="img-fluid preview"/>}
                         </div>
                     </div>
                     <div className="col-12 mt-2">
                         <label className="text text-secondary">Blog Content (required)</label>
                         {error_content && <span className="text text-danger"><br></br>{message}</span>}
                         <Editor
-                            apiKey='4kvvh5bevy08a2ufdcmh74riwibt1l5j8r4brdfoqh7f5uo1'
+                            
                             onInit={(evt, editor) => editorRef.current = editor}
                             onEditorChange={(newContent,editor)=> {
                                 setContent(newContent)
                                 validate_content()
                             }}
-                            initialValue="<p>This is the initial content of the editor.</p>"
+                            initialValue="<p>Write your Contents Here</p>"
                         init={{
                             height: 500,
                             menubar: false,
+                            file_picker_types: 'image media',
+                            file_picker_callback: (cb, value, meta) => {
+                                const input = document.createElement('input');
+                                input.setAttribute('type', 'file');
+                                input.setAttribute('accept', 'image/*');
+                            
+                                input.addEventListener('change', (e) => {
+                                  const file = e.target.files[0];
+                            
+                                  const reader = new FileReader();
+                                  reader.addEventListener('load', () => {
+                                    /*
+                                      Note: Now we need to register the blob in TinyMCEs image blob
+                                      registry. In the next release this part hopefully won't be
+                                      necessary, as we are looking to handle it internally.
+                                    */
+                                    const id = 'blobid' + (new Date()).getTime();
+                                    const blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+                                    const base64 = reader.result.split(',')[1];
+                                    const blobInfo = blobCache.create(id, file, base64);
+                                    blobCache.add(blobInfo);
+                            
+                                    /* call the callback and populate the Title field with the file name */
+                                    cb(blobInfo.blobUri(), { title: file.name });
+                                  });
+                                  reader.readAsDataURL(file);
+                                });
+                            
+                                input.click();
+                              },
                             plugins: [
                             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
                             'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
                             'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
                             ],
-                            toolbar: 'undo redo | blocks | ' +
+                            toolbar: 'undo redo | blocks | blockquote | image |' +
                             'bold italic forecolor | alignleft aligncenter ' +
-                            'alignright alignjustify | bullist numlist outdent indent | ' +
-                            'removeformat | help',
+                            'alignright alignjustify | bullist numlist outdent indent | '
+                            +'removeformat | help',
                         content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                         }}
                         />

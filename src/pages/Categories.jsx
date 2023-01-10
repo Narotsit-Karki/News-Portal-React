@@ -65,11 +65,15 @@ export const Category = () => {
                 {params.cat} <span className="badge badge-danger bg-danger">{news.length}</span>
         </button>
         </div>
-        <div className="row row-cols-2">
+        <div className="row">
             
             { 
                 news.map((nw) => {
-                    return <NewsCard news={nw}/>
+                    return(
+                        <div className="col-12">
+                        <NewsCard news={nw}/>
+                        </div>
+                    )
                 })
             }
         </div>

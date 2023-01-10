@@ -3,10 +3,10 @@ import { useState } from "react";
 import {useDispatch} from "react-redux"
 import { set } from "../app/userSlice";
 import { Link,useNavigate } from "react-router-dom";
-import { setAlertMessage,removeAlertMessage} from "../app/alertSlice";
+import { setAlertMessage} from "../app/alertSlice";
 import logo from "../assets/icon/logo-128x128.png"
 import "../css/style.css";
-import { Alert } from "bootstrap";
+
 
 
 export const Login = () =>{
@@ -24,6 +24,7 @@ export const Login = () =>{
     let[spinner,setSpinner] = useState(false)
     let[message,setErrorMessage] = useState('')
     const navigate = useNavigate();
+    
 
     // setting username and password
     const handleForm = (e) => {
@@ -70,7 +71,6 @@ export const Login = () =>{
                     }
                     
                     dispatch(set(payload))
-
                     dispatch(setAlertMessage({
                         message:'logged in successfully',
                         alert_type: 'success'
