@@ -12,7 +12,10 @@ export const Accounts = () => {
     let[spinner_2,setSpinner_2]=useState(false);
     const [smShow, setSmShow] = useState(false);
     let[blogs,setBlogs] = useState([])
+    
+
     const dispatch = useDispatch()
+    
     const user = useSelector(state => state.user.value)
     const [profile,setProfile] = useState({})
     let initial = {
@@ -22,7 +25,7 @@ export const Accounts = () => {
     }
     
     const[delete_blog,setDeleteBlog]=useState({})
-    const[blog_deleted,setBlogDeleted] = useState(false)
+    const[changed,setChanged] = useState(false)
 
     const[first_name,setFirstname]=useState(initial)
     const[last_name,setLastname]=useState(initial)
@@ -52,7 +55,7 @@ export const Accounts = () => {
         }).catch((error)=>{
             console.log(error)
         })
-    },[user,blog_deleted]
+    },[user,changed]
     )
 
 
@@ -68,7 +71,6 @@ export const Accounts = () => {
                     message:'Blog deleted Successfully',
                     alert_type:'success'
                 }))
-                setBlogDeleted(true)
             }
         }
         ).catch(err=>console.log(err))
@@ -390,7 +392,7 @@ export const Accounts = () => {
                                         <div className="row">
                                             <div className="col-8">
                                             <Link to={`/blog/${blog.slug}`} className="card-link text-decoration-none mt-2 btn btn-primary "><i className="fa-solid fa-eye"></i> Read</Link>
-                                            <Link to={`/blog/edit-blog/${blog.slug}`} className="card-link text-decoration-none mt-2 mx-2 btn btn-warning"><i className="fa-solid fa-pencil"></i> Edit</Link>
+                                            <Link to={`/edit-blog?slug=${blog.slug}&user=${user.user_id}`} className="card-link text-decoration-none mt-2 mx-2 btn btn-warning"><i className="fa-solid fa-pencil"></i> Edit</Link>
                                             <button onClick={() => {
                                                 setSmShow(true)
                                                 setDeleteBlog(blog)

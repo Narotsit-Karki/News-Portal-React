@@ -1,7 +1,4 @@
 import { Link } from "react-router-dom"
-import { useState } from "react"
-
-import axios from "axios"
 export const BlogCard = ({blog}) => {
     let date = new Date(blog.date)
     blog.date = date.toDateString()
@@ -30,11 +27,9 @@ export const BlogCard = ({blog}) => {
            
     </>
 }
-
 export const BlogCardUser = ({blog}) => {
     let date = new Date(blog.date)
     blog.date = date.toDateString()
-   
     return <>
             <div className="col-12 mt-2">
             <div className="card">

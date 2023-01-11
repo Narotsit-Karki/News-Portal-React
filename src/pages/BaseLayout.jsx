@@ -50,6 +50,7 @@ export const BaseLayout = () => {
     useEffect(()=>{
         // get authenticated user info and dispatch set reducer to set user data
         let user_local = JSON.parse(localStorage.getItem('user'))
+        console.log(user_local)
         if(user_local){
             dispatch(set(user_local))
         }

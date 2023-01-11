@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { TopicsCard } from '../components/HotTopicsCard'
 import { Link } from 'react-router-dom'
 import { setAlertMessage } from '../app/alertSlice'
+import { Spinner } from 'react-bootstrap'
 
 export const Home = () => {
     
@@ -90,85 +91,16 @@ export const Home = () => {
                         <Link to={`/search?query=${topic}`} className="btn btn-primary">view more...</Link>
                     </div>
                     </div>
-                    ):''
+                    ):
+                        <div className="d-flex justify-content-center">
+                                 <Spinner className="text-success my-2" style={{ width: '4rem', height: '4rem' }}>
+                                 <span className='visually-hidden'>Loading...</span>
+                                </Spinner>
+                        </div>
+                       
                 }
 
-                  {/* <div className="topics rounded-top shadow">
-                    <div className="col-12">
-                         <h3 className='fst-italic text-sucess'>Crypto</h3>   
-                    </div>
-                    <div className="row row-cols-3">
-                        
-                        {
-                            cryptonews.slice(0,15).map((nw)=><TopicsCard news={nw}/>) 
-                        }
-                    </div>
-                    <div className="col-12 mt-2">
-                        <Link to='/search?query=covid' className="btn btn-primary">view more...</Link>
-                    </div>
-                </div> 
-
-                <div className="topics rounded-top shadow">
-                    <div className="col-12">
-                         <h3 className='fst-italic text-sucess'>Covid</h3>   
-                    </div>
-                    <div className="row row-cols-3">
-                        
-                        {
-                            covidnews.slice(0,15).map((nw)=><TopicsCard news={nw}/>) 
-                        }
-                    </div>
-                    <div className="col-12 mt-2">
-                        <Link to='/search?query=covid' className="btn btn-primary">view more...</Link>
-                    </div>
-                </div> 
-
-                <div className="topics rounded-top shadow">
-                    <div className="col-12">
-                         <h3 className='fst-italic text-sucess'>Sports</h3>   
-                    </div>
-                    <div className="row row-cols-3">
-                        
-                        {
-                            sportsnews.slice(0,15).map((nw)=><TopicsCard news={nw}/>) 
-                        }
-                    </div>
-                    <div className="col-12 mt-2">
-                        <Link to='/search?query=sports' className="btn btn-primary">view more...</Link>
-                    </div>
-                </div> 
-
-                <div className="topics rounded-top shadow">
-                    <div className="col-12">
-                         <h3 className='fst-italic text-sucess'>Russia-Ukraine Conflict</h3>   
-                    </div>
-                    <div className="row row-cols-3">
-                        
-                        {
-                            ukrainenews.slice(0,15).map((nw)=><TopicsCard news={nw}/>) 
-                        }
-                    </div>
-                    <div className="col-12 mt-2">
-                        <Link to='/search?query=ukraine conflict' className="btn btn-primary">view more...</Link>
-                    </div>
                 </div>
-
-                <div className="topics rounded-top shadow">
-                    <div className="col-12">
-                         <h3 className='fst-italic text-sucess'>Local</h3>   
-                    </div>
-                    <div className="row row-cols-3">
-                        
-                        {
-                            localnews.slice(0,15).map((nw)=><TopicsCard news={nw}/>) 
-                        }
-                    </div>
-                    <div className="col-12 mt-2">
-                        <Link to='/search?query=Nepal AND India AND China' className="btn btn-primary">view more...</Link>
-                    </div>
-                </div> */}
-            
-            </div>
         </div>
     }</>
 }

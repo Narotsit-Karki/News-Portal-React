@@ -1,6 +1,6 @@
 import logo from "../assets/icon/logo-512x512.png"
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
-// import "../css/style.css"
+
 
 import { Link } from "react-router-dom";
 

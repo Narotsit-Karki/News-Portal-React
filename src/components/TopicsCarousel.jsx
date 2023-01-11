@@ -4,7 +4,7 @@ import { TopicsCard } from "./HotTopicsCard"
 export const TopicsCarousel = (props) => {
     return <>
     <Carousel fade indicators={false} variant={"dark"}>
-        {/* <div className="row"> */}
+        
                             <Carousel.Item>
                             <div className="row" >
                                 

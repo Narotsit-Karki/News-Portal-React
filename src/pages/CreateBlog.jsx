@@ -30,6 +30,7 @@ export const CreateBlog = () => {
     const [error_content,setErrorContent] = useState(false)
     const [validation_error,setValidationError] = useState(false)
     const [spinner,setSpinner] = useState(false)
+
     // create a preview as a side effect, whenever selected file is changed
     useEffect(() => {
         if (!selectedFile) {
@@ -105,7 +106,7 @@ export const CreateBlog = () => {
 
     const postBlog = () => {
         let blog_data = {
-            'user':user.user_id,
+            user:user.user_id,
             'slug':Math.random().toString(16).slice(2),
             'title':blog.title,
             'description':blog.description,
@@ -130,6 +131,7 @@ export const CreateBlog = () => {
             }
         }).catch(
             (err)=>{
+                console.log(err)
                 dispatch(setAlertMessage(
                     {
                         message:'Oh Snap! Some error occurred',
@@ -153,7 +155,7 @@ export const CreateBlog = () => {
         }
     }
     setValidationError(true)
-}
+    }
 
     return <>
         <div className="row">

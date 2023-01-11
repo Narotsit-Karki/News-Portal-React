@@ -14,6 +14,7 @@ import { CreateBlog } from "./pages/CreateBlog";
 import { NewsDetail } from "./pages/NewsDetails";
 import { Accounts } from "./pages/Accounts";
 import { Search } from "./pages/Search";
+import { EditBlog } from "./pages/EditBlog";
 
 export const SiteRoute = () => {
    
@@ -33,13 +34,13 @@ export const SiteRoute = () => {
                     <Route path="/blog/:slug" element={<BlogDetail/>}/>    
                     <Route path="/category/:cat" element = {<Category/>}/>
                     <Route path="/create-blog" element={<LoginRoute location="/create-blog"><CreateBlog/></LoginRoute>}/>
-                
+                    <Route path="/edit-blog" element={<EditBlog/>}/>
                 </Route>
                 <Route path="*" element={<BaseLayout/>}>
                     <Route path="*" element={<Error404/>}/>
                 </Route>
             </Routes>
-        </BrowserRouter>
+        </BrowserRouter> 
 
     </>
 }   
